@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <form method="post" action="/signup">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+          <legend>Let's join us Mate!</legend>
+          <div class="form-group">
+              {{ form.username.label }}
+              {{ form.username }}
+          </div>
+          <div class="form-group">
+              {{ form.email.label }}
+              {{ form.email }}
+          </div>
+          <div class="form-group">
+              {{ form.password.label }}
+              {{ form.password }}
+          </div>
+          <div class="form-group">
+              {{ form.password_con.label }}
+              {{ form.password_con }}
+          </div>
+          <div class="form-group">
+              {{ form.submit }}
+          </div>
+      </fieldset>
+    </form>
+{% endblock content %}
