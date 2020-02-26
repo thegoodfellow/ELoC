@@ -44,9 +44,9 @@ from flask_login import UserMixin
 #If User does not inherit UserMixin the app won't work (error:the class User does not have the attribute is active)
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
-    id = db.Column(db.String(15), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     #the UserMixin class has a id attrubute that muts be ovverride
-    username = db.Column(db.String(15))
+    username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True, nullable=True)
     password = db.Column(db.String(80), nullable=True)
 
@@ -89,7 +89,7 @@ def load_user(user_id):
         return User.query.get(user_id)
     return None
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -102,12 +102,14 @@ def login():
 
 from forms import SignUpForm
 
-@app.route('/signup', methods=['POST'])
+@app.route('/signup', methods=['POST', 'GET'])
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
+        print User.query.count()
+        tmp_id = User.query.count() + 1
         hashed_password = bcrypt.generate_password_hash(form.password.data).encode('utf-8')
-        tmp_user = User(id=form.username.data, username=form.username.data, email=form.email.data, password=hashed_password)
+        tmp_user = User(id=tmp_id, username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(tmp_user)
         db.session.commit()
         return redirect(url_for('home'))
