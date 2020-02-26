@@ -89,7 +89,7 @@ def load_user(user_id):
         return User.query.get(user_id)
     return None
 
-@app.route('/login', methods=['POST','GET'])
+@app.route('/login', methods=['POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -102,7 +102,7 @@ def login():
 
 from forms import SignUpForm
 
-@app.route('/signup', methods=['POST','GET'])
+@app.route('/signup', methods=['POST'])
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
