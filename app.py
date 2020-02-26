@@ -70,6 +70,10 @@ def home():
 #RENDERING: it is the process that replaces the variables with actual values gotten by http request
 #and retunrs a final string response
 
+@app.route('/search')
+def seek():
+    return render_template('search.html')
+
 from flask_bcrypt import Bcrypt
 bcrypt=Bcrypt(app) #encryption handler
 
