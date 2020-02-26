@@ -94,7 +94,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         dur_time =timedelta(minutes=1)
-        tmp_user=User.query.filter_by(id=form.username.data).first()
+        tmp_user=User.query.filter_by(username=form.username.data).first()
         if tmp_user and bcrypt.check_password_hash(tmp_user.password, form.password.data):
             login_user(user=tmp_user, duration=dur_time)
             return redirect(url_for('home'))
