@@ -106,7 +106,6 @@ from forms import SignUpForm
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
-        print User.query.count()
         tmp_id = User.query.count() + 1
         hashed_password = bcrypt.generate_password_hash(form.password.data).encode('utf-8')
         tmp_user = User(id=tmp_id, username=form.username.data, email=form.email.data, password=hashed_password)
