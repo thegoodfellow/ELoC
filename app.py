@@ -48,10 +48,15 @@ class User(UserMixin, db.Model):
     #the UserMixin class has a id attrubute that muts be ovverride
     username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True, nullable=True)
-    password = db.Column(db.String(80), nullable=True)
+    password = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(30),nullable=True)
+    surname = db.Column(db.String(30), nullable=True)
+    gender = db.Column(db.String(1), nullable=True)
 
     def __repr__(self):
         return "<User %r>" % self.name
+
+
 
 ###############################################################
 
