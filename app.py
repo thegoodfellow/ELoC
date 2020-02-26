@@ -72,7 +72,8 @@ def home():
 
 @app.route('/search')
 def seek():
-    return render_template('search.html')
+    tts = User.query.filter_by().all()
+    return render_template('search.html', tutors= tts)
 
 from flask_bcrypt import Bcrypt
 bcrypt=Bcrypt(app) #encryption handler
