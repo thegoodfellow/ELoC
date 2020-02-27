@@ -64,7 +64,7 @@ class Tutor(User):
 
 ####################### ROUTES ################################
 
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, request
 
 @app.route('/homepage')
 #route is a decorator
@@ -113,14 +113,18 @@ from forms import SignUpForm, CompleteSignUpForm
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
+        signupFields = [form.type.data, form.name.data, form.surname.data, form.gender.data]
         return redirect(url_for('completeSignup'))
 
     return render_template('signup.html', form=form)
 
+
 @app.route('/completeSignup', methods=['POST', 'GET'])
-def signup():
-    form = CompleteSignUpForm()
-    return render_template('completeSignup.html', form=form)
+def completeSignup():
+    cform = CompleteSignUpForm()
+    signupData = request.form
+    print signupData
+    return render_template('completeSignup.html', form=cform)
 
 @app.route('/logout')
 def logout():
