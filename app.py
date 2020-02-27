@@ -107,7 +107,7 @@ def login():
             return redirect(url_for('home'))
     return render_template('login.html', form =form)
 
-from forms import SignUpForm
+from forms import SignUpForm, CompleteSignUpForm
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
@@ -118,8 +118,9 @@ def signup():
     return render_template('signup.html', form=form)
 
 @app.route('/completeSignup', methods=['POST', 'GET'])
-def completeSignup():
-    return render_template('completeSingup.html')
+def signup():
+    form = CompleteSignUpForm()
+    return render_template('completeSignup.html', form=form)
 
 @app.route('/logout')
 def logout():
