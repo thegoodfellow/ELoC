@@ -56,6 +56,8 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return "<User %r>" % self.name
 
+class Tutor(User):
+    degree = db.Column(db.String)
 
 
 ###############################################################
@@ -111,16 +113,13 @@ from forms import SignUpForm
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
-        tmp_id = User.query.count() + 1
-        hashed_password = bcrypt.generate_password_hash(form.password.data).encode('utf-8')
-        tmp_user = User(id=tmp_id, username=form.username.data,
-                        email=form.email.data, password=hashed_password, surname=form.surname.data,
-                        gender=form.gender.data, name=form.name.data)
-        db.session.add(tmp_user)
-        db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('completeSignup'))
 
     return render_template('signup.html', form=form)
+
+@app.route('/completeSignup', methods=['POST', 'GET'])
+def completeSignup():
+    return render_template('completeSingup.html')
 
 @app.route('/logout')
 def logout():
