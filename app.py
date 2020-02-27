@@ -112,19 +112,35 @@ from forms import SignUpForm, CompleteSignUpForm
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     form = SignUpForm()
+    cform = CompleteSignUpForm()
     if form.validate_on_submit():
-        signupFields = [form.type.data, form.name.data, form.surname.data, form.gender.data]
-        return redirect(url_for('completeSignup'))
+        return render_template('completeSignup.html',form=cform)
+    if cform.validate_on_submit():
+        tmp_id = User.query.count() + Tutor.query.count() + 1
+        hashed_password = bcrypt.generate_password_hash(form.password.data).encode('utf-8')
+        if form.type.data == 'student':
+            hashed_password = bcrypt.generate_password_hash(form.password.data).encode('utf-8')
+            tmp_user = User(id=tmp_id, username=form.username.data,
+                            email=form.email.data, password=hashed_password, surname=form.surname.data,
+                            gender=form.gender.data, name=form.name.data)
+        if form.type.data == 'tutor':
+            tmp_user = User(id=tmp_id, username=form.username.data,
+                        email=form.email.data, password=hashed_password, surname=form.surname.data,
+                        gender=form.gender.data, name=form.name.data)
+        if tmp_user:
+            db.session.add(tmp_user)
+            db.session.commit()
+            return redirect(url_for('home'))
 
     return render_template('signup.html', form=form)
 
 
-@app.route('/completeSignup', methods=['POST', 'GET'])
-def completeSignup():
-    cform = CompleteSignUpForm()
-    signupData = request.form
-    print signupData
-    return render_template('completeSignup.html', form=cform)
+#@app.route('/completeSignup', methods=['POST', 'GET'])
+#def completeSignup():
+    #cform = CompleteSignUpForm()
+    #signupData = request.get_json()
+    #print signupData
+    #return render_template('completeSignup.html', form=cform)
 
 @app.route('/logout')
 def logout():
