@@ -11,6 +11,18 @@
               min length 4 max 15
           </div>
           <div class="form-group">
+              {{ form.name.label }}
+              {{ form.name }}
+              {{ form.surname.label }}
+              {{ form.surname }}
+              data required
+          </div>
+          <div class="form-group">
+              {{ form.gender.label }}
+              {{ form.gender }}
+              no constraints
+          </div>
+          <div class="form-group">
               {{ form.email.label }}
               {{ form.email }}
               email data required
@@ -25,6 +37,7 @@
               {{ form.password_con }}
               must be equal
           </div>
+
           <div class="form-group">
               {{ form.submit }}
           </div>

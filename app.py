@@ -51,7 +51,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(80), nullable=False)
     name = db.Column(db.String(30),nullable=True)
     surname = db.Column(db.String(30), nullable=True)
-    gender = db.Column(db.String(1), nullable=True)
+    gender = db.Column(db.String(15), nullable=True)
 
     def __repr__(self):
         return "<User %r>" % self.name
@@ -113,7 +113,9 @@ def signup():
     if form.validate_on_submit():
         tmp_id = User.query.count() + 1
         hashed_password = bcrypt.generate_password_hash(form.password.data).encode('utf-8')
-        tmp_user = User(id=tmp_id, username=form.username.data, email=form.email.data, password=hashed_password)
+        tmp_user = User(id=tmp_id, username=form.username.data,
+                        email=form.email.data, password=hashed_password, surname=form.surname.data,
+                        gender=form.gender.data, name=form.name.data)
         db.session.add(tmp_user)
         db.session.commit()
         return redirect(url_for('home'))
