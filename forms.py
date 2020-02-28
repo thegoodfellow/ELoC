@@ -15,10 +15,10 @@ class CompleteSignUpForm(FlaskForm):#don't know if it is really neccesary using 
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=80)])
     password_con = PasswordField('Confirm', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Sign Up')
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=15)])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=80)])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Login')
 

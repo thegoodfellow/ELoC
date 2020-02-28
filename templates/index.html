@@ -6,7 +6,27 @@
     <p>ONLY 3 STEPS TO FOLLOW</p>
     <p> JOIN ELoC --> SAVE YOUR TIME ---> ENJOY A COLD BEER</p>
 
-<p></p>
+<p>cform = CompleteSignUpForm()
+    if cform.validate_on_submit():
+        tmp_id = User.query.count() + Tutor.query.count() + 1
+        hashed_password = bcrypt.generate_password_hash(cform.password.data).encode('utf-8')
+        print 2
+        print form.type.data
+        if form.type.data.lower() == 'student':
+            print 'a'
+            tmp_user = User(id=tmp_id, username=form.username.data,
+                            email=form.email.data, password=hashed_password, surname=form.surname.data,
+                            gender=form.gender.data, name=form.name.data)
+        if form.type.data.lower() == 'tutor':
+            print 'b'
+            tmp_user = User(id=tmp_id, username=form.username.data,
+                            email=form.email.data, password=hashed_password, surname=form.surname.data,
+                            gender=form.gender.data, name=form.name.data)
+        if (type == 'student' or type == 'tutor') and tmp_user:
+            print '3'
+            db.session.add(tmp_user)
+            db.session.commit()
+            return redirect(url_for('home'))</p>
 
  <p> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
      Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,
