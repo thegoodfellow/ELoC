@@ -79,6 +79,9 @@
             </fieldset>
         </form>
     {% endif %}
+    {% if cform.validate_on_submit() and type == 'student' %}
+        <p>all good bro</p>
+    {% endif %}
 
 
 {% endblock content %}

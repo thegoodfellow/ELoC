@@ -114,16 +114,62 @@ def signup():
     form = SignUpForm()
     cform = CompleteSignUpForm()
     tform = TutorSignUpForm()
-    type = 'student' # default option
+    type = ''
+    #used to store whether a form has been submitted
+    flag1 = False
+    flag2 = False
+    flag3 = False
+
     if form.validate_on_submit():
+        #print new_name
+        flag1 = True
+        print flag1
+        new_name = form.name.data
+        new_surname = form.surname.data
+        new_gender = form.gender.data
+        if form.type.data == 'student':
+            type = 'student'
+            print 'option selected'
+            print form.type.data
         if form.type.data == 'tutor':
-            print '1'
-            type='tutor'
-    a = '-----'
-    print a
-    print form.validate_on_submit()
-    print cform.validate_on_submit()
-    print tform.validate_on_submit()
+            type = 'tutor'
+            print 'option selected'
+            print form.type.data
+     #since data of the first form have been stored lets move on the next form
+    if cform.validate_on_submit() and flag1:
+        print new_name
+        flag2 = True
+        print flag1
+        print flag2
+        print type
+        new_username = cform.username.data
+        new_email = cform.email.data
+        new_password = bcrypt.generate_password_hash(cform.password.data).encode('utf-8')
+    #lets move on the next form
+    if tform.validate_on_submit() and flag1 and flag2:
+        #print new_name
+        flag3 = True
+        print flag3
+        new_degree = tform.degree.data
+    #now we got al the data we are ready to record the user in the db
+    new_id = User.query.count() + Tutor.query.count() + 1
+    if flag1 and flag2 and not flag3: #TODO - after the confirmation page is added there should be another
+                                      #flag for the confirmation button
+        new_user = User(id=new_id, username=new_username,
+                            email=new_email, password=new_password, surname=new_surname,
+                            gender=new_gender, name=new_name)
+        db.session.add(new_user)
+        db.session.commit()
+        print 't t f'
+        return redirect(url_for('home'))
+    if flag1 and flag2 and flag3:
+        print 't t t'
+        new_user = Tutor(id=new_id, username=new_username,
+                            email=new_email, password=new_password, surname=new_surname,
+                            gender=new_gender, name=new_name, degree=new_degree)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('home'))
 
     return render_template('signup.html', form=form, cform=cform, tform=tform, type=type)
 
