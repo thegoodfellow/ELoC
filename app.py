@@ -107,13 +107,25 @@ def login():
             return redirect(url_for('home'))
     return render_template('login.html', form =form)
 
-from forms import SignUpForm, CompleteSignUpForm
+from forms import SignUpForm, CompleteSignUpForm, TutorSignUpForm
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     form = SignUpForm()
     cform = CompleteSignUpForm()
-    return render_template('signup.html', form=form, cform=cform)
+    tform = TutorSignUpForm()
+    type = 'student' # default option
+    if form.validate_on_submit():
+        if form.type.data == 'tutor':
+            print '1'
+            type='tutor'
+    a = '-----'
+    print a
+    print form.validate_on_submit()
+    print cform.validate_on_submit()
+    print tform.validate_on_submit()
+
+    return render_template('signup.html', form=form, cform=cform, tform=tform, type=type)
 
 @app.route('/logout')
 def logout():

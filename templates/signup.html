@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    {% if not form.validate_on_submit() %}
+    {% if not form.validate_on_submit() and not cform.validate_on_submit() %}
         <form method="post" action="/signup">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
@@ -35,32 +35,50 @@
     {% if form.validate_on_submit() %}
         <form method="post" action="/signup">
       {{ cform.hidden_tag() }}
-      <fieldset class="form-group">
-          <legend>Complete the signup</legend>
-          <div class="form-group">
-              {{ cform.username.label }}
-              {{ cform.username }}
-              min length 4 max 15
-          </div>
-          <div class="form-group">
-              {{ cform.email.label }}
-              {{ cform.email }}
-              email data required
-          </div>
-          <div class="form-group">
-              {{ cform.password.label }}
-              {{ cform.password }}
-              min 8 max 80
-          </div>
-          <div class="form-group">
-              {{ cform.password_con.label }}
-              {{ cform.password_con }}
-              must be equal
-          </div>
-          <div class="form-group">
-              {{ cform.submit }}
-          </div>
-      </fieldset>
-    </form>
+            <fieldset class="form-group">
+                <legend>Complete the signup</legend>
+                <div class="form-group">
+                    {{ cform.username.label }}
+                    {{ cform.username }}
+                    min length 4 max 15
+                </div>
+                <div class="form-group">
+                    {{ cform.email.label }}
+                    {{ cform.email }}
+                    email data required
+                </div>
+                <div class="form-group">
+                    {{ cform.password.label }}
+                    {{ cform.password }}
+                    min 8 max 80
+                </div>
+                <div class="form-group">
+                    {{ cform.password_con.label }}
+                    {{ cform.password_con }}
+                    must be equal
+                </div>
+                <div class="form-group">
+                    {{ cform.submit }}
+                </div>
+            </fieldset>
+        </form>
     {% endif %}
+    {% if cform.validate_on_submit() and type == 'tutor' %}
+        <form method="post" action="/signup">
+      {{ tform.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend>Complete the signup</legend>
+                <div class="form-group">
+                    {{ tform.degree.label }}
+                    {{ tform.degree }}
+                    no constraints
+                </div>
+                <div class="form-group">
+                    {{ tform.submit }}
+                </div>
+            </fieldset>
+        </form>
+    {% endif %}
+
+
 {% endblock content %}
