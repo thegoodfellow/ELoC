@@ -1,5 +1,35 @@
 {% extends "layout.html" %}
-
 {% block content %}
-    <p> My Profile Page</p>
+    <form method="post" action="/profile">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="form-group">
+                {{ form.name.label }}
+                {{ current_user.name }}
+            </div>
+            <div class="form-group">
+                {{ form.surname.label }}
+                {{ current_user.surname }}
+            </div>
+            <div class="form-group">
+                {{ form.gender.label }}
+                {{ current_user.gender }}
+            </div>
+            <div class="form-group">
+                {{ form.username.label }}
+                {{ current_user.username }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ current_user.email }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+            </div>
+            <div class="form-group" id="degreeGroup">
+                {{ form.degree.label }}
+                {{ current_user.degree }}
+            </div>
+        </fieldset>
+    </form>
 {% endblock content %}

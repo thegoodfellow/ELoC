@@ -1,6 +1,6 @@
 ###################### APP SET UP#################################
 
-from flask import Flask
+from flask import Flask, session
 
 app = Flask(__name__)
 #istance of a Flask Class used to generate the app to be launched
@@ -42,8 +42,8 @@ login_manager.login_view = 'login'
 from flask_login import UserMixin
 
 #If User does not inherit UserMixin the app won't work (error:the class User does not have the attribute is active)
-class User(UserMixin, db.Model):
-    __tablename__ = 'user'
+class Student(UserMixin, db.Model):
+    __tablename__ = 'student'
     id = db.Column(db.Integer, primary_key=True)
     #the UserMixin class has a id attrubute that muts be ovverride
     username = db.Column(db.String(15), unique=True)
@@ -54,10 +54,26 @@ class User(UserMixin, db.Model):
     gender = db.Column(db.String(15), nullable=True)
 
     def __repr__(self):
-        return "<User %r>" % self.name
+        return "<Student %r>" % self.username
+    def get_id(self):
+        return self.id
 
-class Tutor(User):
+class Tutor(UserMixin, db.Model):#i do not use inheritance otherwise it gets tricky while qerying
+    __tablename__ = 'tutor'
+    id = db.Column(db.Integer, primary_key=True)
+    #the UserMixin class has a id attrubute that muts be ovverride
+    username = db.Column(db.String(15), unique=True)
+    email = db.Column(db.String(50), unique=True, nullable=True)
+    password = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(30),nullable=True)
+    surname = db.Column(db.String(30), nullable=True)
+    gender = db.Column(db.String(15), nullable=True)
     degree = db.Column(db.String)
+
+    def __repr__(self):
+        return "<Tutor %r>" % self.username
+    def get_id(self):
+        return self.id
 
 
 ###############################################################
@@ -79,7 +95,7 @@ def home():
 
 @app.route('/search')
 def seek():
-    tts = User.query.filter_by().all()
+    tts = Tutor.query.filter_by().all()
     return render_template('search.html', tutors= tts)
 
 from flask_bcrypt import Bcrypt
@@ -93,7 +109,9 @@ from flask_login import login_user, logout_user, current_user
 def load_user(user_id):
     """Check if user is logged-in on every page load."""
     if user_id is not None:
-        return User.query.get(user_id)
+        tmp_id = Student.query.get(user_id)
+        tmp_id = Tutor.query.get(user_id)
+        return tmp_id
     return None
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -101,7 +119,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         dur_time =timedelta(minutes=1)
-        tmp_user=User.query.filter_by(username=form.username.data).first()
+        tmp_user=Student.query.filter_by(username=form.username.data).first()
         if tmp_user and bcrypt.check_password_hash(tmp_user.password, form.password.data):
             login_user(user=tmp_user, duration=dur_time)
             return redirect(url_for('home'))
@@ -112,10 +130,30 @@ from forms import SignUpForm
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     form = SignUpForm()
+    if form.validate_on_submit():
+        new_id = Student.query.count() + Tutor.query.count() + 1
+        new_name = form.name.data
+        new_surname = form.surname.data
+        new_gender = form.gender.data
+        new_username = form.username.data
+        new_email = form.email.data
+        new_password = bcrypt.generate_password_hash(form.password.data).encode('utf-8')
+        if form.type.data == 'student':
+            new_id = Student.query.count() + 1
+            new_user = Student(id=new_id, username=new_username,
+                               email=new_email, password=new_password, surname=new_surname,
+                               gender=new_gender, name=new_name)
+        if form.type.data == 'tutor':
+            new_id = Tutor.query.count() + 1
+            new_degree = form.degree.data
+            new_user = Tutor(id=new_id, username=new_username,
+                             email=new_email, password=new_password, surname=new_surname,
+                             gender=new_gender, name=new_name, degree=new_degree)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('home'))
 
-
-
-    return render_template('signup.html', form=form)
+    return render_template('profile.html', form=form)
 
 @app.route('/logout')
 def logout():
@@ -127,7 +165,8 @@ from flask_login import login_required
 @app.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html')
+    form = SignUpForm()
+    return render_template('signup.html', form=form)
 
 @app.errorhandler(404)
 def page_not_found(e):
